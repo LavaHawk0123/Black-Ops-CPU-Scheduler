@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
 
 public class GUI
 {
@@ -30,10 +32,17 @@ public class GUI
     private JLabel wtLabel;
     private JLabel wtResultLabel;
     private JLabel tatLabel;
+    private JLabel alphaLabel;
     private JLabel tatResultLabel;
     private JComboBox option;
     private DefaultTableModel model;
-    
+
+    double prevEstimateT = 0;
+    double currEstimateT = 0;
+    double alpha = 0.5;
+    double alphaoptimal = 0.5;
+    double errorsum = 0.0;
+
     public GUI()
     {
         model = new DefaultTableModel(new String[]{"Process", "AT", "BT", "Priority", "WT", "TAT"}, 0);
@@ -41,6 +50,11 @@ public class GUI
         table = new JTable(model);
         table.setFillsViewportHeight(true);
         tablePane = new JScrollPane(table);
+        model.addRow(new Object[]{"P1", "0","10","0"});
+        model.addRow(new Object[]{"P2", "0","20","0"});
+        model.addRow(new Object[]{"P3", "0","8","0"});
+        model.addRow(new Object[]{"P4", "0","9","0"});
+        model.addRow(new Object[]{"P5", "0","4","0"});
         tablePane.setBounds(25, 25, 450, 250);
         
         addBtn = new JButton("Add");
@@ -100,6 +114,12 @@ public class GUI
         wtLabel = new JLabel("Average WT:");
         wtLabel.setBounds(25, 425, 180, 25);
         wtLabel.setForeground(Color.YELLOW);
+
+        alphaLabel = new JLabel("Optimal Alpha:");
+        alphaLabel.setBounds(25, 475, 260, 25);
+        alphaLabel.setForeground(Color.YELLOW);
+
+        
         tatLabel = new JLabel("Average TAT:");
         tatLabel.setForeground(Color.YELLOW);
         tatLabel.setBounds(25, 450, 180, 25);
@@ -201,6 +221,7 @@ public class GUI
         mainPanel.add(removeBtn);
         mainPanel.add(chartPane);
         mainPanel.add(wtLabel);
+        mainPanel.add(alphaLabel);
         mainPanel.add(tatLabel);
         mainPanel.add(wtResultLabel);
         mainPanel.add(tatResultLabel);
@@ -215,10 +236,27 @@ public class GUI
         frame.add(mainPanel);
         frame.pack();
     }
+
+    public double ML(List<Event> timeline){
+
+            prevEstimateT = timeline.get(0).getFinishTime() - timeline.get(0).getStartTime();
+            if(timeline.size()>2){
+            for (int i = 1; i < timeline.size()-1; i++){
+                double t_n = timeline.get(i).getFinishTime() - timeline.get(i).getStartTime();
+                currEstimateT = alpha*(t_n - prevEstimateT) + prevEstimateT;
+                prevEstimateT = currEstimateT;
+                double error = (currEstimateT - (timeline.get(i+1).getFinishTime() - timeline.get(i+1).getStartTime()))/50;
+                System.out.println("Error : "+error);
+                errorsum = error*error;
+            }
+        }
+        return errorsum/timeline.size();
+    }
     
     public static void main(String[] args)
     {
         new GUI();
+        
     }
     
     class CustomPanel extends JPanel
@@ -232,7 +270,10 @@ public class GUI
             
             if (timeline != null)
             {
-//                int width = 30;
+                double errordiff = ML(timeline)*timeline.size();
+                System.out.println("SSE "+errordiff);
+                alphaoptimal = alphaoptimal - errordiff;
+                alphaLabel.setText("Optimal Alpha:                     "+alphaoptimal);
                 
                 for (int i = 0; i < timeline.size(); i++)
                 {
@@ -250,11 +291,8 @@ public class GUI
                     {
                         g.drawString(Integer.toString(event.getFinishTime()), x + 27, y + 45);
                     }
-                    
-//                    width += 30;
                 }
                 
-//                this.setPreferredSize(new Dimension(width, 75));
             }
         }
         

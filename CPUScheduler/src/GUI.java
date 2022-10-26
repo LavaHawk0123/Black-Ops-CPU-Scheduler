@@ -75,7 +75,9 @@ public class GUI
         
         wtLabel = new JLabel("Average Waiting Time:");
         wtLabel.setBounds(25, 425, 180, 25);
+        wtLabel.setForeground(Color.YELLOW);
         tatLabel = new JLabel("Average Turn Around Time:");
+        tatLabel.setForeground(Color.YELLOW);
         tatLabel.setBounds(25, 450, 180, 25);
         wtResultLabel = new JLabel();
         wtResultLabel.setBounds(215, 425, 180, 25);
@@ -167,6 +169,7 @@ public class GUI
         
         mainPanel = new JPanel(null);
         mainPanel.setPreferredSize(new Dimension(500, 500));
+        mainPanel.setBackground(Color.BLACK);
         mainPanel.add(tablePane);
         mainPanel.add(addBtn);
         mainPanel.add(removeBtn);
@@ -182,6 +185,7 @@ public class GUI
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setResizable(false);
+        frame.getContentPane().setBackground(Color.BLACK);
         frame.add(mainPanel);
         frame.pack();
     }

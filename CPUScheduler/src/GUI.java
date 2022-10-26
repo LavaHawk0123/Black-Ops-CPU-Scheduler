@@ -46,6 +46,7 @@ public class GUI
         addBtn = new JButton("Add");
         addBtn.setBounds(300, 280, 85, 25);
         addBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        addBtn.setBackground(Color.WHITE);
         addBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,6 +57,7 @@ public class GUI
         removeBtn = new JButton("Remove");
         removeBtn.setBounds(390, 280, 85, 25);
         removeBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        removeBtn.setBackground(Color.WHITE);
         removeBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,21 +69,45 @@ public class GUI
             }
         });
         
+        addBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                addBtn.setBackground(Color.YELLOW);
+            }
+        
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                addBtn.setBackground(Color.WHITE);
+            }
+        });
+
+        removeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                removeBtn.setBackground(Color.YELLOW);
+            }
+        
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                removeBtn.setBackground(Color.WHITE);
+            }
+        });
+
+
+        
         chartPanel = new CustomPanel();
 //        chartPanel.setPreferredSize(new Dimension(700, 10));
         chartPanel.setBackground(Color.WHITE);
         chartPane = new JScrollPane(chartPanel);
         chartPane.setBounds(25, 310, 450, 100);
         
-        wtLabel = new JLabel("Average Waiting Time:");
+        wtLabel = new JLabel("Average WT:");
         wtLabel.setBounds(25, 425, 180, 25);
         wtLabel.setForeground(Color.YELLOW);
-        tatLabel = new JLabel("Average Turn Around Time:");
+        tatLabel = new JLabel("Average TAT:");
         tatLabel.setForeground(Color.YELLOW);
         tatLabel.setBounds(25, 450, 180, 25);
         wtResultLabel = new JLabel();
         wtResultLabel.setBounds(215, 425, 180, 25);
+        wtResultLabel.setForeground(Color.YELLOW);
         tatResultLabel = new JLabel();
+        tatResultLabel.setForeground(Color.YELLOW);
         tatResultLabel.setBounds(215, 450, 180, 25);
         
         option = new JComboBox(new String[]{"FCFS", "SJF", "SRT", "PSN", "PSP", "RR"});
